@@ -1,0 +1,16 @@
+from .BaseViewerScene import BaseViewerScene
+from src import constants
+
+
+class BlockedMessagesViewerScene(BaseViewerScene):
+    def __init__(self, session, redis, driver):
+        super().__init__()
+        self.session = session
+        self.redis = redis
+        self.driver = driver
+
+    def fetch(self, start, end):
+        return self.redis.zrange('%s:%s' % (constants.SS_BLOCKED_MESSAGES, self.session['me'].login), start, end)
+
+    def items_count(self):
+        return self.redis.zcard('%s:%s' % (constants.SS_BLOCKED_MESSAGES, self.session['me'].login))
